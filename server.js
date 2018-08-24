@@ -18,6 +18,6 @@ app.get('/', (request, response) => {
     })
 });
 
-app.listen(3000, ()=> {
-    console.log('Pizza baking on port 3000');
+app.listen(port, ()=> {
+    console.log(`Pizza baking on port ${port}`);
 });
