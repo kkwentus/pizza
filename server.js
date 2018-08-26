@@ -3,13 +3,13 @@ const express = require('express');
 const port = process.env.PORT || 3000;
 
 var app = express();
+var path = require('path');
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname));
 
 //parser for json format
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
-
 
 //set up DB connection
 var mongoose = require('mongoose');
@@ -64,6 +64,11 @@ app.get('/profiles/:id', (request, response) => {
         response.status(400).send('invalid id');
     }
 
+});
+
+app.get('/', function(request, response) {
+    console.log ('HTML INCOMING');
+    response.sendFile(path.join(__dirname + '/index.html'));
 });
 
 
