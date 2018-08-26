@@ -10,6 +10,7 @@ var custProfile = mongoose.model('profile', {
     },
     gender: {
         type: String,
+        default: 'none',
         trim: true
     },
     googlecount: {
@@ -20,9 +21,9 @@ var custProfile = mongoose.model('profile', {
         type: String,
         required: true
     },
-    verified: {
-        type: String,
-        default: false
+    numberorders: {
+        type: Number,
+        default: 0
     }
 });
 

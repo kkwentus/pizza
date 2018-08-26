@@ -2,9 +2,36 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Welcome to Pizza 42</title>
+        <title>Quick Order Pizza 42</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <style>
+             body { padding-top:50px; }
+        </style>
     </head>
-<body>
-    <h2>Time to order your pizza</h2>
+
+
+    <div class="container">
+        <div class="jumbotron">
+             <h2>Your Quick Orders</h2>>
+                 <button id="orderBtn" class="btn btn-primary btn-margin">
+                     1 large pepperoni, extra cheese
+                 </button>
+         </div>
+    </div>
+
+
+    <main class="container">
+             <div id="logout-view">
+                <button id="logoutBtn" class="btn btn-primary btn-margin">
+                   Logout out Pizza 42
+             </button>
+        </div>
+    </main>
+
+    <script src="auth0-variables.js"></script>
+    <script src="node_modules/auth0-js/build/auth0.js"></script>
+    <script src="app.js"></script>
 </body>
+</body>
+</html>
 </html>
