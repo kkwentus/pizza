@@ -18,10 +18,10 @@ window.addEventListener('load', function() {
   var homeView = document.getElementById('home-view');
   var profileView = document.getElementById('profile-view');
 
+  // buttons and event listeners
+  var loginBtn = document.getElementById('loginBtn');
+  var logoutBtn = document.getElementById('logoutBtn');
 
-  var loginBtn = document.getElementById('userLoginBtn');
-  var logoutBtn = document.getElementById('userLogoutBtn');
-  var orderBtn = document.getElementById('quickOrderBtn');
   var homeViewBtn = document.getElementById('homeBtn');
   var profileViewBtn = document.getElementById('profileBtn');
 
@@ -48,6 +48,9 @@ window.addEventListener('load', function() {
     var expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
     );
+    console.log(`token ${authResult.accessToken}`);
+    console.log(`id ${authResult.idToken}`);
+    console.log(`expiration ${expiresAt}`);
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
@@ -74,7 +77,6 @@ window.addEventListener('load', function() {
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
       profileViewBtn.style.display = 'inline-block';
-      orderBtn.style.display = 'inline-block';
       loginStatus.innerHTML =
         'You are logged in! You can now view your profile area.';
     } else {
