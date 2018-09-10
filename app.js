@@ -17,7 +17,7 @@ window.addEventListener('load', function() {
   var loginView = document.getElementById('login-view');
   var homeView = document.getElementById('home-view');
   var profileView = document.getElementById('profile-view');
-
+  var orderView = document.getElementById('order-view');
 
   var loginBtn = document.getElementById('userLoginBtn');
   var logoutBtn = document.getElementById('userLogoutBtn');
@@ -28,17 +28,27 @@ window.addEventListener('load', function() {
   homeViewBtn.addEventListener('click', function() {
     homeView.style.display = 'inline-block';
     profileView.style.display = 'none';
+    orderView.style.display = 'none';
   });
 
   profileViewBtn.addEventListener('click', function() {
     homeView.style.display = 'none';
     profileView.style.display = 'inline-block';
+    orderView.style.display = 'none';
     getProfile();
   });
 
   loginBtn.addEventListener('click', function(e) {
     e.preventDefault();
     webAuth.authorize();
+  });
+
+  orderBtn.addEventListener('click', function() {
+    console.log('authorizing order');
+    homeView.style.display = 'inline-block';
+    profileView.style.display = 'none';
+    orderView.style.display= 'inline-block';
+    isVerified();
   });
 
   logoutBtn.addEventListener('click', logout);
@@ -68,6 +78,32 @@ window.addEventListener('load', function() {
     return new Date().getTime() < expiresAt;
   }
 
+  function isVerified(){
+    console.log('verifying');
+    var accessToken = localStorage.getItem('access_token');
+
+    if (!accessToken) {
+      console.log('You must be logged in to order a pizza');
+    } 
+    else {
+      webAuth.client.userInfo(accessToken, function(err, profile) {
+        if (profile) {
+          userProfile = profile;
+          var orderStatus = document.querySelector('#order-view .status');
+
+          if(!userProfile.email_verified){
+            orderStatus.innerHTML = 'Please verify your email address to order a pizza.';
+            console.log('email account not verified.');
+          } 
+          else {
+            orderStatus.innerHTML = '1 Large Pepperoni has been ordered';
+            console.log('email account has been verified');
+          }  
+        }   
+      }); 
+    }
+  }//end isVerified
+
   function displayButtons() {
     var loginStatus = document.querySelector('.container h4');
     if (isAuthenticated()) {
@@ -75,6 +111,7 @@ window.addEventListener('load', function() {
       logoutBtn.style.display = 'inline-block';
       profileViewBtn.style.display = 'inline-block';
       orderBtn.style.display = 'inline-block';
+      orderView.style.display = 'inline-block';
       loginStatus.innerHTML =
         'You are logged in.';
     } else {
@@ -84,10 +121,11 @@ window.addEventListener('load', function() {
       profileViewBtn.style.display = 'none';
       profileView.style.display = 'none';
       orderBtn.style.display = 'none';
+      orderView.style.display = 'none';
       loginStatus.innerHTML =
         'Please login to order a pizza.';
     }
-  }
+  }//end displayButtons
 
   function getProfile() {
     if (!userProfile) {
@@ -97,6 +135,7 @@ window.addEventListener('load', function() {
         console.log('Access token must exist to fetch profile');
       }
 
+      console.log('displaying profile');
       webAuth.client.userInfo(accessToken, function(err, profile) {
         if (profile) {
           userProfile = profile;
@@ -106,17 +145,16 @@ window.addEventListener('load', function() {
     } else {
       displayProfile();
     }
-  }
+  } //end getProfile
 
   function displayProfile() {
-    // display the profile
     document.querySelector('#profile-view .nickname').innerHTML =
       userProfile.nickname;
     document.querySelector(
       '#profile-view .full-profile'
     ).innerHTML = JSON.stringify(userProfile, null, 2);
     document.querySelector('#profile-view img').src = userProfile.picture;
-  }
+  }//end displayProfile
 
   function handleAuthentication() {
     webAuth.parseHash(function(err, authResult) {
@@ -134,7 +172,7 @@ window.addEventListener('load', function() {
       }
       displayButtons();
     });
-  }
+  }//end handleAuthentication
 
   handleAuthentication();
 });
