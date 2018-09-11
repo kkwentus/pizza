@@ -2,6 +2,7 @@ window.addEventListener('load', function() {
   var userProfile;
   var content = document.querySelector('.content');
   content.style.display = 'block';
+  var verified;
 
   var webAuth = new auth0.WebAuth({
     domain: AUTH0_DOMAIN,
@@ -9,7 +10,7 @@ window.addEventListener('load', function() {
     redirectUri: AUTH0_CALLBACK_URL,
     audience: 'https://' + AUTH0_DOMAIN + '/userinfo',
     responseType: 'token id_token',
-    scope: 'openid profile',
+    scope: 'openid profile email',
     leeway: 60
   });
 
@@ -44,7 +45,6 @@ window.addEventListener('load', function() {
   });
 
   orderBtn.addEventListener('click', function() {
-    console.log('authorizing order');
     homeView.style.display = 'inline-block';
     profileView.style.display = 'none';
     orderView.style.display= 'inline-block';
@@ -78,31 +78,6 @@ window.addEventListener('load', function() {
     return new Date().getTime() < expiresAt;
   }
 
-  function isVerified(){
-    console.log('verifying');
-    var accessToken = localStorage.getItem('access_token');
-
-    if (!accessToken) {
-      console.log('You must be logged in to order a pizza');
-    } 
-    else {
-      webAuth.client.userInfo(accessToken, function(err, profile) {
-        if (profile) {
-          userProfile = profile;
-          var orderStatus = document.querySelector('#order-view .status');
-
-          if(!userProfile.email_verified){
-            orderStatus.innerHTML = 'Please verify your email address to order a pizza.';
-            console.log('email account not verified.');
-          } 
-          else {
-            orderStatus.innerHTML = '1 Large Pepperoni has been ordered';
-            console.log('email account has been verified');
-          }  
-        }   
-      }); 
-    }
-  }//end isVerified
 
   function displayButtons() {
     var loginStatus = document.querySelector('.container h4');
@@ -127,8 +102,24 @@ window.addEventListener('load', function() {
     }
   }//end displayButtons
 
-  function getProfile() {
-    if (!userProfile) {
+function isVerified() {
+  var accessToken = localStorage.getItem('access_token');
+  var loginStatus = document.querySelector('.container h4');
+
+  if (verified){
+    console.log(`customer has been verified`);
+    loginStatus.innerHTML =
+        'Your account has been verified.  One large pizza will arrive at your house within the hour.';
+  }
+  else{
+    loginStatus.innerHTML =
+      'Please use the verify email link sent to your address for Quick Order access'
+  }
+ 
+};
+
+function getProfile() {
+  if (!userProfile) {
       var accessToken = localStorage.getItem('access_token');
 
       if (!accessToken) {
@@ -139,6 +130,9 @@ window.addEventListener('load', function() {
       webAuth.client.userInfo(accessToken, function(err, profile) {
         if (profile) {
           userProfile = profile;
+          verified = userProfile.email_verified;
+          console.log(JSON.stringify(userProfile, undefined, 2));
+          console.log(userProfile.email_verified);
           displayProfile();
         }
       });
