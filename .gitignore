@@ -1,5 +1,4 @@
 /node_modules
-/mongodb
+/mongo-data
 blankvars.js
 fullvars.js
-welcome.html
