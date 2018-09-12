@@ -4,6 +4,7 @@ window.addEventListener('load', function() {
   content.style.display = 'block';
   var verified;
 
+
   var webAuth = new auth0.WebAuth({
     domain: AUTH0_DOMAIN,
     clientID: AUTH0_CLIENT_ID,
@@ -102,21 +103,37 @@ window.addEventListener('load', function() {
     }
   }//end displayButtons
 
+function sendOrder() {      
+    console.log('calling API');
+    // add an entry into the DB via the pizza42 api
+    axios.post(PIZZAURL, {
+      userId: userProfile.sub,
+      email: userProfile.email
+    })
+    .then(function (response) {
+      console.log(`SUCcESS`);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+  } 
+
 function isVerified() {
   var accessToken = localStorage.getItem('access_token');
   var loginStatus = document.querySelector('.container h4');
 
   if (verified){
-    console.log(`customer has been verified`);
+    console.log(`customer can order a pizza`);
+    sendOrder();  
     loginStatus.innerHTML =
-        'Your account has been verified.  One large pizza will arrive at your house within the hour.';
+        'Your account has been verified.  One large pizza will arrive at your house within the hour.'    
   }
   else{
     loginStatus.innerHTML =
       'Please use the verify email link sent to your address for Quick Order access'
   }
- 
-};
+};//end ifVerified
 
 function getProfile() {
   if (!userProfile) {

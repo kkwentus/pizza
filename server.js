@@ -21,12 +21,10 @@ app.get('/', function(request, response) {
 
 
 app.post('/order', (request, response) => {
-    console.log('adding pizza order record', request.body);
+    console.log('trying to add pizza order for user:', request.body.userId);
 
         var pizza = new pizzaOrder({
-            userid: request.body.userid,
-            gender: request.body.gender,
-            googlecount: request.body.count,
+            userid: request.body.userId,
             email: request.body.email 
         });
 
